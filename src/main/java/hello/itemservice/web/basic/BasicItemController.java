@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,13 +42,54 @@ public class BasicItemController {
         return "basic/addForm";
     }
 
-    // 상품 등록 폼의 URL과 실제 상품 등록을 처리하는 URL을 동일하게 하고,
-    // HTTP 메서드(GET, POST)로 두 기능을 구분
-    // 이렇게 하면 하나의 URL로 등록 폼과, 등록 처리를 깔끔하게 처리 가능
-    // 아주 합리적인 방법
+    // @RequestParam은 html input의 name 속성과 동일하게 설정해야 함
+//    @PostMapping("/add")
+    public String addItemV1(@RequestParam String itemName,
+                            @RequestParam int price,
+                            @RequestParam Integer quantity,
+                            Model model) {
+
+        Item item = new Item();
+        item.setItemName(itemName);
+        item.setPrice(price);
+        item.setQuantity(quantity);
+
+        itemRepository.save(item);
+
+        model.addAttribute("item", item);
+
+        return "basic/item";
+    }
+
+    /**
+     * @ModelAttribute("item") Item item
+     * model.addAttribute("item", item); 자동 추가 */
+//    @PostMapping("/add")
+    public String addItemV2(@ModelAttribute("item") Item item, Model model) {
+        itemRepository.save(item);
+//        model.addAttribute("item", item);  // @ModelAttribute을 사용하면 자동 추가가 되기 때문에, 생략 가능함
+
+        return "basic/item";
+    }
+
+    /**
+     * @ModelAttribute name 생략 가능
+     * model.addAttribute(item); 자동 추가, 생략 가능
+     * 생략시 model에 저장되는 name은 클래스명 첫글자만 소문자로 등록 Item -> item */
+//    @PostMapping("/add")
+    public String addItemV3(@ModelAttribute Item item, Model model) {
+        itemRepository.save(item);
+        return "basic/item";
+    }
+
+    /**
+     * @ModelAttribute 자체 생략 가능
+     * model.addAttribute(item) 자동 추가
+     * 이렇게까지 줄이는 건 권장하지는 않음 */
     @PostMapping("/add")
-    public String save() {
-        return "";
+    public String addItemV4(Item item) {
+        itemRepository.save(item);
+        return "basic/item";
     }
 
     // 테스트용 데이터 추가

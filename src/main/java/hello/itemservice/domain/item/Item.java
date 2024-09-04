@@ -1,7 +1,6 @@
 package hello.itemservice.domain.item;
 
-import lombok.Data;
-import lombok.Getter;
+ import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -17,7 +16,7 @@ public class Item {
     private Integer price;
     private Integer quantity;
 
-    public Item(Long id, String itemName, Integer price, Integer quantity) {
+    public Item() {  // 원래 이게 맞는데 내가 잘못 만들었었음
 
     }
 
